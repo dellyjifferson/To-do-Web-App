@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todo Dashboard</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <span class="brand-icon">&#9745;</span>
+        <span class="brand-name">TodoDash</span>
+      </div>
+
+      <nav class="nav-section">
+        <span class="nav-label">FILTER</span>
+        <button class="nav-btn active" data-filter="all">
+          <span class="nav-icon">&#9635;</span> All Tasks
+        </button>
+        <button class="nav-btn" data-filter="todo">
+          <span class="nav-icon">&#9675;</span> To Do
+        </button>
+        <button class="nav-btn" data-filter="in-progress">
+          <span class="nav-icon">&#9633;</span> In Progress
+        </button>
+        <button class="nav-btn" data-filter="done">
+          <span class="nav-icon">&#10003;</span> Done
+        </button>
+      </nav>
+
+      <nav class="nav-section">
+        <span class="nav-label">CATEGORIES</span>
+        <div id="category-list"></div>
+      </nav>
+
+      <button class="btn-add" id="btn-add-todo">
+        <span>+</span> New Task
+      </button>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+      <!-- Top bar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="menu-toggle" id="menu-toggle">&#9776;</button>
+          <h1 id="page-title">All Tasks</h1>
+        </div>
+        <div class="topbar-right">
+          <div class="search-wrap">
+            <input type="text" class="search-input" id="search-input" placeholder="Search tasks...">
+          </div>
+        </div>
+      </header>
+
+      <!-- Stats Row -->
+      <section class="stats-row" id="stats-row">
+        <div class="stat-card">
+          <span class="stat-label">Total</span>
+          <span class="stat-value" id="stat-total">0</span>
+        </div>
+        <div class="stat-card stat-active">
+          <span class="stat-label">Active</span>
+          <span class="stat-value" id="stat-active">0</span>
+        </div>
+        <div class="stat-card stat-done">
+          <span class="stat-label">Completed</span>
+          <span class="stat-value" id="stat-done">0</span>
+        </div>
+        <div class="stat-card stat-overdue">
+          <span class="stat-label">Overdue</span>
+          <span class="stat-value" id="stat-overdue">0</span>
+        </div>
+      </section>
+
+      <!-- Completion Rate -->
+      <section class="completion-section">
+        <div class="completion-header">
+          <span class="completion-label">Completion Rate</span>
+          <span class="completion-pct" id="completion-pct">0%</span>
+        </div>
+        <div class="completion-bar-bg">
+          <div class="completion-bar-fill" id="completion-bar" style="width: 0%"></div>
+        </div>
+      </section>
+
+      <!-- Category Distribution -->
+      <section class="chart-section">
+        <h3 class="chart-title">Tasks by Category</h3>
+        <div class="chart-bars" id="chart-bars"></div>
+      </section>
+
+      <!-- Todo List -->
+      <section class="todo-list" id="todo-list"></section>
+    </main>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal" id="modal">
+      <div class="modal-header">
+        <h2 id="modal-title">New Task</h2>
+        <button class="modal-close" id="modal-close">&times;</button>
+      </div>
+      <form class="modal-form" id="modal-form">
+        <input type="hidden" id="todo-id">
+        <div class="form-group">
+          <label for="todo-title">Title</label>
+          <input type="text" id="todo-title" required placeholder="Task title...">
+        </div>
+        <div class="form-group">
+          <label for="todo-desc">Description</label>
+          <textarea id="todo-desc" rows="3" placeholder="Optional description..."></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group form-half">
+            <label for="todo-category">Category</label>
+            <select id="todo-category">
+              <option value="General">General</option>
+              <option value="Work">Work</option>
+              <option value="Personal">Personal</option>
+              <option value="Shopping">Shopping</option>
+              <option value="Health">Health</option>
+            </select>
+          </div>
+          <div class="form-group form-half">
+            <label for="todo-status">Status</label>
+            <select id="todo-status">
+              <option value="todo">To Do</option>
+              <option value="in-progress">In Progress</option>
+              <option value="done">Done</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group form-half">
+            <label for="todo-priority">Priority</label>
+            <select id="todo-priority">
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+          <div class="form-group form-half">
+            <label for="todo-due">Due Date</label>
+            <input type="date" id="todo-due">
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" id="btn-cancel">Cancel</button>
+          <button type="submit" class="btn-save">Save Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>
