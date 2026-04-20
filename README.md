@@ -66,4 +66,4 @@ If you want to reset data, clear this key from your browser's local storage.
 
 ## License
 
-No license file is included yet. Add a `LICENSE` file if you plan to distribute this project.
+No license file is included yet. Add a `LICENSE` file if you plan to distribute this project. Note that this project is made by vibe coding.
