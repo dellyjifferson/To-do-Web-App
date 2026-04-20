@@ -11,6 +11,8 @@
   const categoryList = $('#category-list');
   const pageTitle = $('#page-title');
   const searchInput = $('#search-input');
+  const sidebar = $('#sidebar');
+  const menuToggle = $('#menu-toggle');
   const completionPct = $('#completion-pct');
   const completionBar = $('#completion-bar');
   const modalOverlay = $('#modal-overlay');
@@ -184,7 +186,12 @@
       activeFilter = btn.dataset.filter;
       updateTitle();
       render();
+      sidebar.classList.remove('open');
     });
+  });
+
+  menuToggle.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
   });
 
   // Category buttons (delegated)
@@ -194,6 +201,7 @@
     activeCategory = btn.dataset.cat;
     updateTitle();
     render();
+    sidebar.classList.remove('open');
   });
 
   // Search
