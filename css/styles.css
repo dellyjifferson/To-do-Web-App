@@ -239,6 +239,116 @@ body {
 .toggle.checked { background: var(--accent); border-color: var(--accent); }
 .toggle.checked::after { content: '\2713'; color: #fff; font-size: 12px; font-weight: 700; }
 
+/* ===== Calendar ===== */
+.calendar-section {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 24px;
+}
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.calendar-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.nav-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+}
+.nav-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+.nav-btn:active {
+  transform: scale(0.95);
+}
+.calendar-month-year {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  min-width: 120px;
+  text-align: center;
+}
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-size: 14px;
+  position: relative;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.calendar-day:hover {
+  background: var(--bg-hover);
+}
+.calendar-day.other-month {
+  color: var(--text-muted);
+}
+.calendar-day.today {
+  background: var(--accent-glow);
+  font-weight: 600;
+}
+.calendar-day-number {
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+.calendar-day-label {
+  font-size: 11px;
+  text-align: center;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.calendar-day-label.dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin: 2px;
+}
+
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
   .app { grid-template-columns: 1fr; }

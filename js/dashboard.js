@@ -4,6 +4,7 @@
   let activeCategory = 'all';
   let searchQuery = '';
   let editingId = null;
+  let currentCalDate = new Date(); // for calendar display
 
   const $ = (s) => document.querySelector(s);
   const todoList = $('#todo-list');
