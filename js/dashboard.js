@@ -3,6 +3,7 @@
   let activeFilter = 'all';
   let activeCategory = 'all';
   let searchQuery = '';
+  let selectedDate = null;
   let editingId = null;
   let currentCalDate = new Date(); // for calendar display
 
@@ -29,6 +30,11 @@
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+  }
+
+  function formatDateLong(dateStr) {
+    const d = new Date(dateStr + 'T00:00:00');
+    return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
   }
 
   // ===== Render Stats =====
@@ -83,7 +89,11 @@
   // ===== Render Todo List =====
   function renderTodos() {
     const todos = TodoStore.getAll();
-    const filtered = filterTodos(todos, { status: activeFilter, category: activeCategory, search: searchQuery });
+    let filtered = filterTodos(todos, { status: activeFilter, category: activeCategory, search: searchQuery });
+
+    if (selectedDate) {
+      filtered = filtered.filter(todo => todo.due === selectedDate);
+    }
 
     if (filtered.length === 0 && todos.length === 0) {
       todoList.innerHTML = '<div class="empty-state">' +
@@ -95,10 +105,11 @@
     }
 
     if (filtered.length === 0) {
+      const emptyText = selectedDate ? ('No tasks for ' + formatDate(selectedDate) + '.') : 'Try changing your filters.';
       todoList.innerHTML = '<div class="empty-state">' +
         '<div class="empty-state-icon">&#128269;</div>' +
         '<div class="empty-state-title">No matching tasks</div>' +
-        '<div class="empty-state-text">Try changing your filters.</div>' +
+        '<div class="empty-state-text">' + emptyText + '</div>' +
         '</div>';
       return;
     }
@@ -135,6 +146,19 @@
         '</div>' +
         '</div>';
     }).join('');
+  }
+
+  function renderDateFocus() {
+    const wrap = $('#date-focus');
+    const text = $('#date-focus-text');
+    if (!selectedDate) {
+      wrap.hidden = true;
+      text.textContent = '';
+      return;
+    }
+
+    wrap.hidden = false;
+    text.textContent = 'Showing tasks for ' + formatDateLong(selectedDate);
   }
 
   // ===== Render Calendar =====
@@ -178,7 +202,11 @@
       const dayTodos = todosByDate[dayStr] || [];
       const isToday = dayStr === todayStr;
       
-      let dayHtml = '<div class="calendar-day' + (isToday ? ' is-today' : '') + '">' +
+      const isSelected = selectedDate === dayStr;
+      const hasTasksClass = dayTodos.length > 0 ? ' has-tasks' : '';
+      const selectedClass = isSelected ? ' is-selected' : '';
+
+      let dayHtml = '<div class="calendar-day' + (isToday ? ' is-today' : '') + hasTasksClass + selectedClass + '" data-date="' + dayStr + '">' +
         '<div class="calendar-day-num">' + day + '</div>';
       
       if (dayTodos.length > 0) {
@@ -215,6 +243,7 @@
     renderStats();
     renderChart();
     renderCategories();
+    renderDateFocus();
     renderTodos();
     renderCalendar();
   }
@@ -301,6 +330,31 @@
   $('#cal-next').addEventListener('click', () => {
     currentCalDate.setMonth(currentCalDate.getMonth() + 1);
     renderCalendar();
+  });
+
+  $('#calendar-days').addEventListener('click', (e) => {
+    const dayCell = e.target.closest('.calendar-day[data-date]');
+    if (!dayCell) return;
+
+    const date = dayCell.dataset.date;
+    selectedDate = selectedDate === date ? null : date;
+
+    // Date click intentionally focuses timeline view on that day.
+    activeFilter = 'all';
+    activeCategory = 'all';
+    searchQuery = '';
+    searchInput.value = '';
+    document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
+    const allBtn = document.querySelector('[data-filter="all"]');
+    if (allBtn) allBtn.classList.add('active');
+
+    updateTitle();
+    render();
+  });
+
+  $('#date-focus-clear').addEventListener('click', () => {
+    selectedDate = null;
+    render();
   });
 
   // Modal close
