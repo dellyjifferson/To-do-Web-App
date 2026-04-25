@@ -137,12 +137,86 @@
     }).join('');
   }
 
+  // ===== Render Calendar =====
+  function renderCalendar() {
+    const year = currentCalDate.getFullYear();
+    const month = currentCalDate.getMonth();
+    
+    // Update month/year display
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                       'July', 'August', 'September', 'October', 'November', 'December'];
+    $('#cal-month-year').textContent = monthNames[month] + ' ' + year;
+    
+    // Get first day of month and number of days
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    
+    // Get all todos and create a map of date -> todos
+    const todos = TodoStore.getAll();
+    const todosByDate = {};
+    todos.forEach(todo => {
+      if (todo.due) {
+        todosByDate[todo.due] = todosByDate[todo.due] || [];
+        todosByDate[todo.due].push(todo);
+      }
+    });
+    
+    // Generate calendar days HTML
+    let daysHtml = '';
+    
+    // Empty cells for days before month starts
+    for (let i = 0; i < firstDay; i++) {
+      daysHtml += '<div class="calendar-day-empty"></div>';
+    }
+    
+    // Days of the month
+    const today = new Date();
+    const todayStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+    
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dayStr = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+      const dayTodos = todosByDate[dayStr] || [];
+      const isToday = dayStr === todayStr;
+      
+      let dayHtml = '<div class="calendar-day' + (isToday ? ' is-today' : '') + '">' +
+        '<div class="calendar-day-num">' + day + '</div>';
+      
+      if (dayTodos.length > 0) {
+        dayHtml += '<div class="calendar-day-tasks">';
+        dayTodos.slice(0, 2).forEach(todo => {
+          const statusClass = 'task-' + todo.status;
+          const title = todo.title.substring(0, 12) + (todo.title.length > 12 ? '...' : '');
+          dayHtml += '<div class="calendar-task ' + statusClass + '" title="' + escapeHtml(todo.title) + '">' +
+            escapeHtml(title) + 
+            '</div>';
+        });
+        if (dayTodos.length > 2) {
+          dayHtml += '<div class="calendar-task-more">+' + (dayTodos.length - 2) + '</div>';
+        }
+        dayHtml += '</div>';
+      }
+      
+      dayHtml += '</div>';
+      daysHtml += dayHtml;
+    }
+    
+    // Empty cells for days after month ends
+    const totalCells = firstDay + daysInMonth;
+    const remainingCells = (Math.ceil(totalCells / 7) * 7) - totalCells;
+    for (let i = 0; i < remainingCells; i++) {
+      daysHtml += '<div class="calendar-day-empty"></div>';
+    }
+    
+    $('#calendar-days').innerHTML = daysHtml;
+  }
+
   // ===== Full Render =====
   function render() {
     renderStats();
     renderChart();
     renderCategories();
     renderTodos();
+    renderCalendar();
   }
 
   // ===== Page Title =====
@@ -217,6 +291,17 @@
 
   // Add button
   $('#btn-add-todo').addEventListener('click', () => openModal(null));
+
+  // Calendar navigation
+  $('#cal-prev').addEventListener('click', () => {
+    currentCalDate.setMonth(currentCalDate.getMonth() - 1);
+    renderCalendar();
+  });
+
+  $('#cal-next').addEventListener('click', () => {
+    currentCalDate.setMonth(currentCalDate.getMonth() + 1);
+    renderCalendar();
+  });
 
   // Modal close
   $('#modal-close').addEventListener('click', closeModal);
