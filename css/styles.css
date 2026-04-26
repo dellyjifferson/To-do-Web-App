@@ -91,6 +91,14 @@ body {
 .topbar-left h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.4px; }
 .menu-toggle { display: none; background: none; border: none; color: var(--text-primary); font-size: 22px; cursor: pointer; padding: 4px 8px; }
 
+.topbar-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
 .search-wrap { position: relative; }
 .search-input {
   background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius);
@@ -99,6 +107,63 @@ body {
 }
 .search-input::placeholder { color: var(--text-muted); }
 .search-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+
+.auth-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sync-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.sync-status::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-muted);
+}
+
+.sync-status.is-online::before { background: var(--success); }
+.sync-status.is-syncing::before { background: var(--warning); }
+.sync-status.is-offline::before { background: var(--danger); }
+.sync-status.is-local::before { background: var(--info); }
+
+.auth-btn {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  padding: 9px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition), transform 0.1s ease;
+}
+
+.auth-btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--bg-hover);
+}
+
+.auth-btn:active { transform: translateY(1px); }
+
+.auth-btn-secondary {
+  color: var(--text-secondary);
+}
 
 /* ===== Stats Row ===== */
 .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
@@ -438,6 +503,8 @@ body {
   .topbar-right { width: 100%; }
   .search-input { width: 100%; }
   .date-focus { flex-direction: column; align-items: flex-start; }
+  .auth-wrap { width: 100%; }
+  .auth-btn { flex: 1 1 auto; }
 }
 
 @media (max-width: 480px) {

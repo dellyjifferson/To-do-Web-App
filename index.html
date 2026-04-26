@@ -53,6 +53,11 @@
           <div class="search-wrap">
             <input type="text" class="search-input" id="search-input" placeholder="Search tasks...">
           </div>
+          <div class="auth-wrap">
+            <span class="sync-status" id="sync-status">Local only</span>
+            <button class="auth-btn" id="auth-sign-in" type="button">Google sign-in</button>
+            <button class="auth-btn auth-btn-secondary" id="auth-sign-out" type="button" hidden>Sign out</button>
+          </div>
         </div>
       </header>
 
@@ -184,6 +189,13 @@
     </div>
   </div>
 
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+  <script>
+    // Replace null with your Firebase web app config to enable cloud sync and Google sign-in.
+    window.FIREBASE_CONFIG = null;
+  </script>
   <script src="js/app.js"></script>
   <script src="js/dashboard.js"></script>
 </body>

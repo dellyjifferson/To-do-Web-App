@@ -20,6 +20,9 @@
   const modalOverlay = $('#modal-overlay');
   const modalForm = $('#modal-form');
   const modalTitle = $('#modal-title');
+  const syncStatus = $('#sync-status');
+  const authSignIn = $('#auth-sign-in');
+  const authSignOut = $('#auth-sign-out');
 
   function formatDate(dateStr) {
     const d = new Date(dateStr + 'T00:00:00');
@@ -30,6 +33,30 @@
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+  }
+
+  function updateSyncControls() {
+    if (!syncStatus || !TodoStore.getSyncState) return;
+
+    const state = TodoStore.getSyncState();
+    syncStatus.textContent = state.label;
+    syncStatus.classList.remove('is-online', 'is-syncing', 'is-offline', 'is-local');
+    syncStatus.classList.add(
+      state.tone === 'online' ? 'is-online' :
+      state.tone === 'syncing' ? 'is-syncing' :
+      state.tone === 'offline' ? 'is-offline' : 'is-local'
+    );
+
+    if (authSignIn && authSignOut) {
+      const firebaseReady = state.firebaseConfigured && state.firebaseReady;
+      authSignIn.hidden = !firebaseReady || state.authenticated;
+      authSignOut.hidden = !firebaseReady || !state.authenticated;
+      authSignIn.disabled = !firebaseReady;
+      authSignIn.title = firebaseReady
+        ? 'Sign in with Google to sync your tasks'
+        : 'Add Firebase config to enable Google sign-in';
+      authSignOut.title = state.authenticated ? 'Sign out from this account' : '';
+    }
   }
 
   function formatDateLong(dateStr) {
@@ -246,6 +273,7 @@
     renderDateFocus();
     renderTodos();
     renderCalendar();
+    updateSyncControls();
   }
 
   // ===== Page Title =====
@@ -332,6 +360,20 @@
     renderCalendar();
   });
 
+  if (authSignIn) {
+    authSignIn.addEventListener('click', () => {
+      if (!TodoStore.signInWithGoogle) return;
+      TodoStore.signInWithGoogle().catch(() => {});
+    });
+  }
+
+  if (authSignOut) {
+    authSignOut.addEventListener('click', () => {
+      if (!TodoStore.signOut) return;
+      TodoStore.signOut().catch(() => {});
+    });
+  }
+
   $('#calendar-days').addEventListener('click', (e) => {
     const dayCell = e.target.closest('.calendar-day[data-date]');
     if (!dayCell) return;
@@ -414,7 +456,7 @@
 
   // ===== Init =====
   // Seed sample data if empty
-  if (TodoStore.getAll().length === 0) {
+  if (TodoStore.getAll().length === 0 && !TodoStore.isFirebaseConfigured()) {
     const today = new Date();
     const pad = (n) => String(n).padStart(2, '0');
     const fmt = (d) => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
@@ -425,6 +467,12 @@
     TodoStore.add({ title: 'Morning workout', description: '30 min run + stretching', category: 'Health', status: 'done', priority: 'medium', due: fmt(today) });
     TodoStore.add({ title: 'Update project docs', description: '', category: 'Work', status: 'in-progress', priority: 'low', due: fmt(addDays(today, 3)) });
     TodoStore.add({ title: 'Read current articles', description: 'Finish chapter 7', category: 'Personal', status: 'in-progress', priority: 'low', due: fmt(addDays(today, 5)) });
+  }
+
+  if (TodoStore.subscribe) {
+    TodoStore.subscribe(() => {
+      render();
+    });
   }
 
   render();
